@@ -110,11 +110,11 @@ export default {
       }
 
       if (post.in_reply_to_user_id) {
-        return `user_id: ${post.user_id_short}`;
+        return `user_id: ${post.reply_to_user_id_short}`;
       }
 
       if (post.in_reply_to_text_id) {
-        return `text_id: ${post.text_id_short}`;
+        return `text_id: ${post.reply_to_text_id_short}`;
       }
     },
 
