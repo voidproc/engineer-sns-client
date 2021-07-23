@@ -20,7 +20,7 @@
             </span>
           </span>
         </div>
-        <div class="uk-margin-small-bottom">{{ post.text }}</div>
+        <div class="uk-text-break uk-margin-small-bottom">{{ post.text }}</div>
       </div>
       <div>
         <span class="uk-text-primary" uk-icon="icon: reply" @click="reply(post.id)"></span>
