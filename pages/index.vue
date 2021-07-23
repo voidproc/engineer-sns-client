@@ -182,13 +182,11 @@ export default {
     async getTimelinePosts() {
       this.posts.timeline = await this.$api.getText(this.pagenation.timeline.limit, this.pagenation.timeline.current * this.pagenation.timeline.limit);
       this.posts.timeline = this.formatPosts(this.posts.timeline);
-      console.log('timeline', new Date().toLocaleTimeString());
     },
 
     async getMentionPosts() {
       this.posts.mention = await this.$api.getMentionText(this.ownUserInfo.id, this.pagenation.mention.limit);
       this.posts.mention = this.formatPosts(this.posts.mention);
-      console.log('mention', new Date().toLocaleTimeString());
     },
 
     async getSearchPosts() {
@@ -205,12 +203,10 @@ export default {
 
     async getUsers() {
       this.users = await this.$api.getUserAll();
-      console.log('users', new Date().toLocaleTimeString());
     },
 
     async getLikes() {
       this.likes = await this.$api.getLikes();
-      console.log('likes', new Date().toLocaleTimeString());
     },
 
     async getLikesAndFormatPosts() {

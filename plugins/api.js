@@ -36,20 +36,18 @@ export default ({ app }, inject) => {
         likeCount = Number((await app.$http.$get(`${ApiUrl}/like/${text_id}`)).like_count);
       }
       catch {
-        ;
+        return 0;
       }
       return likeCount;
     },
 
     async incrementLikeCount(text_id) {
       const count = await this.getLikeCount(text_id);
-      console.log(count);
       this.setLikeCount(text_id, count + 1);
     },
 
     async decrementLikeCount(text_id) {
       const count = await this.getLikeCount(text_id);
-      console.log(count);
       this.setLikeCount(text_id, Math.max(0, count - 1));
     },
 

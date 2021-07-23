@@ -7,7 +7,7 @@
     <div>
       <input class="uk-input" type="text" placeholder="Something" v-model="text" />
     </div>
-    <button class="uk-button uk-button-default uk-button-primary" @click="$emit('submitPost', text)">Post</button>
+    <button class="uk-button uk-button-default uk-button-primary" @click="$emit('submitPost', text); text = '';">Post</button>
   </div>
 </template>
 
