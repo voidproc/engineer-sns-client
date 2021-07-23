@@ -65,7 +65,8 @@
         </div>
         <div v-if="content === 'Settings'">
           <account-view :ownUserInfo="ownUserInfo" />
-          <settings-view />
+          <hr>
+          <settings-view @changeInterval="changeInterval" />
         </div>
       </div>
     </section>
@@ -120,6 +121,7 @@ export default {
         }
       },
 
+      // 検索
       searchText: '',
       radioSearchTarget: 'userid',
 
@@ -128,6 +130,21 @@ export default {
 
       // 自分のユーザ情報
       ownUserInfo: undefined,
+
+      // 更新間隔
+      timerInterval: {
+        timeline: 1000 * 60 * 3,
+        mention: 1000 * 60 * 3,
+        users: 1000 * 60 * 10,
+        likes: 1000 * 60 * 5,
+      },
+
+      intervalId: {
+        timeline: null,
+        mention: null,
+        users: null,
+        likes: null,
+      }
     }
   },
 
@@ -151,8 +168,7 @@ export default {
     await this.getTimelinePosts();
     await this.getMentionPosts();
 
-    setInterval(this.getTimelinePosts, 1000 * 60 * 3);
-    setInterval(this.getUsers, 1000 * 60 * 10);
+    this.setTimerIntervals();
   },
 
   computed: {
@@ -166,11 +182,13 @@ export default {
     async getTimelinePosts() {
       this.posts.timeline = await this.$api.getText(this.pagenation.timeline.limit, this.pagenation.timeline.current * this.pagenation.timeline.limit);
       this.posts.timeline = this.formatPosts(this.posts.timeline);
+      console.log('timeline', new Date().toLocaleTimeString());
     },
 
     async getMentionPosts() {
       this.posts.mention = await this.$api.getMentionText(this.ownUserInfo.id, this.pagenation.mention.limit);
       this.posts.mention = this.formatPosts(this.posts.mention);
+      console.log('mention', new Date().toLocaleTimeString());
     },
 
     async getSearchPosts() {
@@ -187,10 +205,19 @@ export default {
 
     async getUsers() {
       this.users = await this.$api.getUserAll();
+      console.log('users', new Date().toLocaleTimeString());
     },
 
     async getLikes() {
       this.likes = await this.$api.getLikes();
+      console.log('likes', new Date().toLocaleTimeString());
+    },
+
+    async getLikesAndFormatPosts() {
+      await this.getLikes();
+      this.posts.timeline = this.formatPosts(this.posts.timeline);
+      this.posts.mention = this.formatPosts(this.posts.mention);
+      this.posts.search = this.formatPosts(this.posts.search);
     },
 
     formatPosts(posts) {
@@ -262,20 +289,12 @@ export default {
 
     async incrementLikeCount(text_id) {
       await this.$api.incrementLikeCount(text_id);
-      await this.getLikes();
-
-      // Like数反映
-      this.posts.timeline = this.formatPosts(this.posts.timeline);
-      this.posts.mention = this.formatPosts(this.posts.mention);
+      await this.getLikesAndFormatPosts();
     },
 
     async decrementLikeCount(text_id) {
       await this.$api.decrementLikeCount(text_id);
-      await this.getLikes();
-
-      // Like数反映
-      this.posts.timeline = this.formatPosts(this.posts.timeline);
-      this.posts.mention = this.formatPosts(this.posts.mention);
+      await this.getLikesAndFormatPosts();
     },
 
     async changeTimelinePage(page) {
@@ -298,6 +317,30 @@ export default {
     async search() {
       await this.getSearchPosts();
     },
+
+    setTimerIntervals() {
+      if (this.intervalId.timeline)
+        clearInterval(this.intervalId.timeline);
+      if (this.intervalId.mention)
+        clearInterval(this.intervalId.mention);
+      if (this.intervalId.users)
+        clearInterval(this.intervalId.users);
+      if (this.intervalId.likes)
+        clearInterval(this.intervalId.likes);
+
+      this.intervalId.timeline = setInterval(this.getTimelinePosts, this.timerInterval.timeline);
+      this.intervalId.mention = setInterval(this.getMentionPosts, this.timerInterval.mention);
+      this.intervalId.users = setInterval(this.getUsers, this.timerInterval.users);
+      this.intervalId.likes = setInterval(this.getLikes, this.timerInterval.likes);
+    },
+
+    changeInterval(interval) {
+      this.timerInterval.timeline = 1000 * 60 * interval.timeline;
+      this.timerInterval.mention = 1000 * 60 * interval.mention;
+      this.timerInterval.users = 1000 * 60 * interval.users;
+      this.timerInterval.likes = 1000 * 60 * interval.likes;
+      this.setTimerIntervals();
+    }
   }
 }
 </script>

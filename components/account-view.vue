@@ -1,5 +1,7 @@
 <template>
   <div class="uk-margin" uk-margin>
+    <legend class="uk-legend">Account</legend>
+
     <div>
       <input class="uk-input" type="text" placeholder="Name" v-model="userName" />
     </div>
