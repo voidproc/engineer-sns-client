@@ -18,7 +18,6 @@ export default {
         'Timeline',
         'Mention',
         'Search',
-        'Account',
         'Settings',
       ],
     }

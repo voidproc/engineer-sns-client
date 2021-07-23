@@ -15,7 +15,7 @@
 
     <section class="uk-section uk-section-small uk-padding-small uk-padding-remove-top">
       <div class="uk-container">
-        <div v-if="content !== 'Account' && content !== 'Settings'">
+        <div v-if="content !== 'Settings'">
           <button class="uk-button uk-button-primary uk-margin-bottom" uk-icon="icon: file-edit" @click="showSubmitView('')"></button>
           <button class="uk-button uk-button-default uk-margin-bottom" uk-icon="icon: refresh" @click="getCurrentContentPosts"></button>
         </div>
@@ -63,8 +63,9 @@
             @changePage="changeSearchPage"
             @searchUser="searchUser" />
         </div>
-        <div v-if="content === 'Account'">
+        <div v-if="content === 'Settings'">
           <account-view :ownUserInfo="ownUserInfo" />
+          <settings-view />
         </div>
       </div>
     </section>
@@ -77,13 +78,15 @@ import PostList from '@/components/post-list.vue';
 import ContentSwitcher from '@/components/content-switcher.vue';
 import SubmitView from '@/components/submit-view.vue';
 import AccountView from '@/components/account-view.vue';
+import SettingsView from '@/components/settings-view.vue';
 
 export default {
   components: {
     PostList,
     ContentSwitcher,
     SubmitView,
-    AccountView
+    AccountView,
+    SettingsView,
   },
 
   data() {
@@ -132,7 +135,7 @@ export default {
   },
 
   async mounted() {
-    this.users = await this.$api.getUserAll();
+    await this.getUsers();
 
     // 自分のユーザ情報取得
     const id = await this.$api.createUser('', '');
@@ -141,7 +144,7 @@ export default {
       await this.$api.updateUser(this.ownUserInfo.name, this.ownUserInfo.description);
     }
 
-    this.likes = await this.$api.getLikes();
+    await this.getLikes();
 
     this.pagenation.timeline.count = await this.$api.getTextCount();
 
@@ -149,6 +152,7 @@ export default {
     await this.getMentionPosts();
 
     setInterval(this.getTimelinePosts, 1000 * 60 * 3);
+    setInterval(this.getUsers, 1000 * 60 * 10);
   },
 
   computed: {
@@ -179,6 +183,14 @@ export default {
       }
       this.posts.search = await this.$api.getSearchText(query, this.pagenation.search.limit);
       this.posts.search = this.formatPosts(this.posts.search);
+    },
+
+    async getUsers() {
+      this.users = await this.$api.getUserAll();
+    },
+
+    async getLikes() {
+      this.likes = await this.$api.getLikes();
     },
 
     formatPosts(posts) {
@@ -250,16 +262,18 @@ export default {
 
     async incrementLikeCount(text_id) {
       await this.$api.incrementLikeCount(text_id);
-      this.likes = await this.$api.getLikes();
+      await this.getLikes();
 
+      // Like数反映
       this.posts.timeline = this.formatPosts(this.posts.timeline);
       this.posts.mention = this.formatPosts(this.posts.mention);
     },
 
     async decrementLikeCount(text_id) {
       await this.$api.decrementLikeCount(text_id);
-      this.likes = await this.$api.getLikes();
+      await this.getLikes();
 
+      // Like数反映
       this.posts.timeline = this.formatPosts(this.posts.timeline);
       this.posts.mention = this.formatPosts(this.posts.mention);
     },
