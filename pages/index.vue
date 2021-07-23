@@ -163,8 +163,6 @@ export default {
 
     await this.getLikes();
 
-    this.pagenation.timeline.count = await this.$api.getTextCount();
-
     await this.getTimelinePosts();
     await this.getMentionPosts();
 
@@ -182,7 +180,9 @@ export default {
     async getTimelinePosts() {
       this.posts.timeline = await this.$api.getText(this.pagenation.timeline.limit, this.pagenation.timeline.current * this.pagenation.timeline.limit);
       this.posts.timeline = this.formatPosts(this.posts.timeline);
-    },
+
+      this.pagenation.timeline.count = await this.$api.getTextCount();
+  },
 
     async getMentionPosts() {
       this.posts.mention = await this.$api.getMentionText(this.ownUserInfo.id, this.pagenation.mention.limit);
