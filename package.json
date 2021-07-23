@@ -1,0 +1,18 @@
+{
+  "name": "engineer-sns-client",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "start": "nuxt start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nuxt/http": "^0.6.4",
+    "nuxt": "^2.15.7",
+    "uikit": "^3.7.1"
+  }
+}
