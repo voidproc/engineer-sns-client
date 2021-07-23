@@ -66,7 +66,7 @@
         <div v-if="content === 'Settings'">
           <account-view :ownUserInfo="ownUserInfo" />
           <hr>
-          <settings-view @changeInterval="changeInterval" />
+          <settings-view :timerInterval="timerInterval" @changeInterval="changeInterval" />
         </div>
       </div>
     </section>
@@ -133,10 +133,10 @@ export default {
 
       // 更新間隔
       timerInterval: {
-        timeline: 1000 * 60 * 3,
-        mention: 1000 * 60 * 3,
-        users: 1000 * 60 * 10,
-        likes: 1000 * 60 * 5,
+        timeline: 3,
+        mention: 3,
+        users: 10,
+        likes: 5,
       },
 
       intervalId: {
@@ -328,17 +328,16 @@ export default {
       if (this.intervalId.likes)
         clearInterval(this.intervalId.likes);
 
-      this.intervalId.timeline = setInterval(this.getTimelinePosts, this.timerInterval.timeline);
-      this.intervalId.mention = setInterval(this.getMentionPosts, this.timerInterval.mention);
-      this.intervalId.users = setInterval(this.getUsers, this.timerInterval.users);
-      this.intervalId.likes = setInterval(this.getLikes, this.timerInterval.likes);
+      this.intervalId.timeline = setInterval(this.getTimelinePosts, this.timerInterval.timeline * 1000 * 60);
+      this.intervalId.mention = setInterval(this.getMentionPosts, this.timerInterval.mention * 1000 * 60);
+      this.intervalId.users = setInterval(this.getUsers, this.timerInterval.users * 1000 * 60);
+      this.intervalId.likes = setInterval(this.getLikes, this.timerInterval.likes * 1000 * 60);
     },
 
     changeInterval(interval) {
-      this.timerInterval.timeline = 1000 * 60 * interval.timeline;
-      this.timerInterval.mention = 1000 * 60 * interval.mention;
-      this.timerInterval.users = 1000 * 60 * interval.users;
-      this.timerInterval.likes = 1000 * 60 * interval.likes;
+      this.timerInterval = {
+        ...interval
+      }
       this.setTimerIntervals();
     }
   }

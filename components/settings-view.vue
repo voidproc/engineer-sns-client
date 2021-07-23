@@ -41,21 +41,17 @@
         </option>
       </select>
     </div>
-
   </div>
 </template>
 
 <script>
 export default {
-  props: [],
+  props: [ 'timerInterval' ],
 
   data() {
     return {
       interval: {
-        timeline: 3,
-        mention: 3,
-        users: 10,
-        likes: 5,
+        ...this.timerInterval,
       },
 
       freqOptions: [
