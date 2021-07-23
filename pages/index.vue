@@ -15,7 +15,7 @@
 
     <section class="uk-section uk-section-small uk-padding-small uk-padding-remove-top">
       <div class="uk-container">
-        <div v-if="content !== 'Account'">
+        <div v-if="content !== 'Account' && content !== 'Settings'">
           <button class="uk-button uk-button-primary uk-margin-bottom" uk-icon="icon: file-edit" @click="showSubmitView('')"></button>
         </div>
         <div v-if="content === 'Search'">

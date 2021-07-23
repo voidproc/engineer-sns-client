@@ -19,6 +19,7 @@ export default {
         'Mention',
         'Search',
         'Account',
+        'Settings',
       ],
     }
   },
