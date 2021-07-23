@@ -146,6 +146,8 @@ export default {
 
     await this.getTimelinePosts();
     await this.getMentionPosts();
+
+    setInterval(this.getTimelinePosts, 1000 * 60 * 3);
   },
 
   computed: {
