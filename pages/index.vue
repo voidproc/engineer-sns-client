@@ -17,6 +17,7 @@
       <div class="uk-container">
         <div v-if="content !== 'Account' && content !== 'Settings'">
           <button class="uk-button uk-button-primary uk-margin-bottom" uk-icon="icon: file-edit" @click="showSubmitView('')"></button>
+          <button class="uk-button uk-button-default uk-margin-bottom" uk-icon="icon: refresh" @click="getCurrentContentPosts"></button>
         </div>
         <div v-if="content === 'Search'">
           <div class="uk-inline">
@@ -207,6 +208,18 @@ export default {
         posts = this.posts.search;
       }
       return posts;
+    },
+
+    async getCurrentContentPosts() {
+      if (this.content === 'Timeline') {
+        await this.getTimelinePosts();
+      }
+      else if (this.content === 'Mention') {
+        await this.getMentionPosts();
+      }
+      else if (this.content === 'Search') {
+        await this.getSearchPosts();
+      }
     },
 
     showSubmitView(replyToId) {
