@@ -7,20 +7,12 @@
         <span class="uk-text-muted uk-text-small">{{ post._updated_at }}</span>
       </div>
       <div>
-        <div class="uk-text-primary uk-text-small">
-          <span v-if="post.in_reply_to_user_id && post.in_reply_to_text_id">
-            <span class="uk-text-bold">@{{ post.reply_to_user_name || '' }}</span>[u:{{ post.reply_to_user_id_short || '' }}<span v-if="post.in_reply_to_text_id"> t:{{ post.reply_to_text_id_short || '' }}</span>]
+        <div class="uk-text-break uk-margin-small-bottom">
+          <span v-if="isReplyPost(post)" class="uk-text-primary uk-text-small uk-text-bold" :title="titleReplyTo(post)">
+            <a class="uk-link-reset" href="#" @click="$emit('searchUser', post.in_reply_to_user_id)">@{{ textReplyTo(post) }}</a>
           </span>
-          <span v-else>
-            <span v-if="post.in_reply_to_user_id">
-              <span class="uk-text-bold">@{{ post.reply_to_user_name || '' }}</span>[u:{{ post.reply_to_user_id_short || '' }}]
-            </span>
-            <span v-if="post.in_reply_to_text_id">
-              <span class="uk-text-bold">@</span>[t:{{ post.reply_to_text_id_short || '' }}]
-            </span>
-          </span>
+          {{ post.text }}
         </div>
-        <div class="uk-text-break uk-margin-small-bottom">{{ post.text }}</div>
       </div>
       <div>
         <span class="uk-text-primary" uk-icon="icon: reply" @click="reply(post.id)"></span>
@@ -106,6 +98,38 @@ export default {
 
     paginationTo(page) {
       this.$emit('changePage', page);
+    },
+
+    isReplyPost(post) {
+      return post.in_reply_to_user_id || post.in_reply_to_text_id;
+    },
+
+    textReplyTo(post) {
+      if (post.reply_to_user_name) {
+        return post.reply_to_user_name;
+      }
+
+      if (post.in_reply_to_user_id) {
+        return `user_id: ${post.user_id_short}`;
+      }
+
+      if (post.in_reply_to_text_id) {
+        return `text_id: ${post.text_id_short}`;
+      }
+    },
+
+    titleReplyTo(post) {
+      let title = '';
+
+      if (post.in_reply_to_user_id) {
+        title += `user_id: ${post.in_reply_to_user_id}`;
+      }
+
+      if (post.in_reply_to_text_id) {
+        title += `, text_id: ${post.in_reply_to_text_id}`;
+      }
+
+      return title;
     },
   }
 }
