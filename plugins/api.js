@@ -15,15 +15,18 @@ export default ({ app }, inject) => {
     // つぶやきを取得
     // count: 取得する件数
     async getText(count, skip = 0) {
-      return await app.$http.$get(`${ApiUrl}/text/all?$orderby=_created_at desc&$limit=${count}&$skip=${skip}`);
+      return await app.$http.$get(`${ApiUrl}/text/all?$orderby=_created_at desc&$limit=${count}&$skip=${skip}`)
+        .catch(error => []);
     },
 
     async getMentionText(ownUid, count, skip = 0) {
-      return await app.$http.$get(`${ApiUrl}/text/all?$orderby=_created_at desc&$limit=${count}&$filter=in_reply_to_user_id eq '${ownUid}'&$skip=${skip}`);
+      return await app.$http.$get(`${ApiUrl}/text/all?$orderby=_created_at desc&$limit=${count}&$filter=in_reply_to_user_id eq '${ownUid}'&$skip=${skip}`)
+        .catch(error => []);
     },
 
     async getSearchText(query, count, skip = 0) {
-      return await app.$http.$get(`${ApiUrl}/text/all?$orderby=_created_at desc&$limit=${count}&${query}&$skip=${skip}`);
+      return await app.$http.$get(`${ApiUrl}/text/all?$orderby=_created_at desc&$limit=${count}&${query}&$skip=${skip}`)
+        .catch(error => []);
     },
 
     async getLikes() {
@@ -43,12 +46,12 @@ export default ({ app }, inject) => {
 
     async incrementLikeCount(text_id) {
       const count = await this.getLikeCount(text_id);
-      this.setLikeCount(text_id, count + 1);
+      return this.setLikeCount(text_id, count + 1);
     },
 
     async decrementLikeCount(text_id) {
       const count = await this.getLikeCount(text_id);
-      this.setLikeCount(text_id, Math.max(0, count - 1));
+      return this.setLikeCount(text_id, Math.max(0, count - 1));
     },
 
     async setLikeCount(text_id, count) {
@@ -60,7 +63,10 @@ export default ({ app }, inject) => {
       let postData = {
         like_count: count,
       };
-      const response = await app.$http.put(`${ApiUrl}/like/${text_id}`, postData, config);
+
+      const response = await app.$http.put(`${ApiUrl}/like/${text_id}`, postData, config)
+        .catch(error => error.response);
+      return response;
     },
 
     // つぶやきを投稿
@@ -79,11 +85,13 @@ export default ({ app }, inject) => {
       if (in_reply_to_user_id) {
         postData.in_reply_to_user_id = in_reply_to_user_id;
       }
+
       const response = await app.$http.post(
         `${ApiUrl}/text`,
         postData,
-        config
-      );
+        config)
+        .catch(error => error.response);
+      return response;
     },
 
     async getUserCount() {
